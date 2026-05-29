@@ -1,5 +1,6 @@
 module.exports = {
   onboarding: false,
+  token: process.env.GITHUB_TOKEN,
 
   // ─── File matching for non-conventional values filenames ────────────────────
   // Overrides the default "/(^|/)values\.ya?ml$/" to match our pattern:
