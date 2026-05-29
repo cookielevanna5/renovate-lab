@@ -1,0 +1,13 @@
+when:
+  event:
+    - push
+  branch:
+    - main
+
+steps:
+  renovate:
+    image: renovate/renovate:latest
+    environment:
+      RENOVATE_PR_CONCURRENT_LIMIT: 0
+    commands:
+      - renovate
