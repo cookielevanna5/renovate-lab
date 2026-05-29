@@ -22,7 +22,7 @@ function generateAppEnvRules() {
       rules.push({
         matchFileNames: [`applications/${app}/${env}/**`],
         additionalBranchPrefix: `${app}-${env}-`,
-        commitMessageAction: `⬆️ [${app} - ${env}] bump`,
+        commitMessageAction: `⬆️ 🎉 [${app} - ${env}] bump`,
       });
     }
   }
@@ -39,12 +39,15 @@ module.exports = {
   repositories: ["cookielevanna5/renovate-lab"],
   prHourlyLimit: 0,
 
+  // ── Disable semantic commit detection and set our own prefix ─────────────
+  semanticCommits: "disabled",
+  commitMessagePrefix: "Release",
+
   "helm-values": {
     managerFilePatterns: ["/applications/[^/]+/[^/]+/[^/]+-values\\.ya?ml$/"],
   },
 
   packageRules: [
-    // ── Base rule: versioning for all helm-values docker deps ─────────────
     {
       matchManagers: ["helm-values"],
       matchDatasources: ["docker"],
@@ -53,8 +56,6 @@ module.exports = {
       commitMessageTopic: "{{depName}}",
       commitMessageExtra: "{{currentVersion}} → {{newVersion}}",
     },
-
-    // ── Dynamically generated: one rule per app+env directory ─────────────
     ...generateAppEnvRules(),
   ],
 };
