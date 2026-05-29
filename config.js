@@ -4,7 +4,7 @@ module.exports = {
   requireConfig: "optional",
   token: process.env.GITHUB_TOKEN,
   gitAuthor: "Renovate Bot <renovate@mail.com>",
-  repositories: ["cookielevanna5/cryptoapp"],
+  repositories: ["cookielevanna5/renovate-lab"],
 
   prHourlyLimit: 0,
 
