@@ -18,15 +18,23 @@ module.exports = {
       versioning: "docker",
       pinDigests: false,
 
-      // ── One branch per app+env+image, no grouping ───────────────────────
-      additionalBranchPrefix: "{{replace 'applications/' '' parentDir}}-",
-      branchTopic: "{{depName}}-{{newMajor}}.x",
+      // ── Each unique app+env gets its own branch ──────────────────────────
+      // parentDir = "applications/app/beta"
+      // replace 'applications/' '' → "app/beta"
+      // then used as prefix → "renovate/app/beta-docker.io/busybox-1.x"
+      // Renovate sanitizes slashes in branch names automatically
+      additionalBranchPrefix: "{{parentDir}}-",
 
-      // ── "applications/app/beta" → "app - beta" via regex capture groups ─
+      // ── Title uses same regex capture ────────────────────────────────────
+      // parentDir = "applications/app/beta" → "$1 - $2" = "app - beta"
       commitMessageAction:
         "⬆️ [{{replace '^applications/([^/]+)/([^/]+)$' '$1 - $2' parentDir}}] bump",
       commitMessageTopic: "{{depName}}",
       commitMessageExtra: "{{currentVersion}} → {{newVersion}}",
+
+      // ── This is the key fix: each packageFile gets its own PR ────────────
+      separateMultipleMajors: true,
+      separateMinorPatch: false,
     },
   ],
 };
