@@ -17,7 +17,6 @@ module.exports = {
       matchManagers: ["helm-values"],
       matchDatasources: ["docker"],
 
-      // ── handles both "1.0.0" and "v1.0.0" tag formats ──────────────────
       versioning: "docker",
 
       additionalBranchPrefix: "{{replace 'applications/' '' parentDir}}-",
