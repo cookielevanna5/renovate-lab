@@ -5,7 +5,6 @@ module.exports = {
   token: process.env.GITHUB_TOKEN,
   gitAuthor: "Renovate Bot <renovate@mail.com>",
   repositories: ["cookielevanna5/renovate-lab"],
-
   prHourlyLimit: 0,
 
   "helm-values": {
@@ -19,16 +18,13 @@ module.exports = {
       versioning: "docker",
       pinDigests: false,
 
-      // ── Fix grouping: each file gets its own PR ──────────────────────────
-      branchName:
-        "renovate/{{replace 'applications/' '' parentDir}}-{{depName}}-{{newMajor}}.x",
-      additionalBranchPrefix: "",
+      // ── One branch per app+env+image, no grouping ───────────────────────
+      additionalBranchPrefix: "{{replace 'applications/' '' parentDir}}-",
+      branchTopic: "{{depName}}-{{newMajor}}.x",
 
-      // ── Fix title: use packageFileDir instead of parentDir ───────────────
-      // packageFileDir = "applications/app/beta"
-      // after replace → "app/beta" → "app - beta"
+      // ── "applications/app/beta" → "app - beta" via regex capture groups ─
       commitMessageAction:
-        "⬆️ [{{regexReplace 'applications/([^/]+)/([^/]+)' '$1 - $2' packageFileDir}}] bump",
+        "⬆️ [{{replace '^applications/([^/]+)/([^/]+)$' '$1 - $2' parentDir}}] bump",
       commitMessageTopic: "{{depName}}",
       commitMessageExtra: "{{currentVersion}} → {{newVersion}}",
     },
