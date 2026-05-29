@@ -2,40 +2,32 @@ module.exports = {
   onboarding: false,
   token: process.env.GITHUB_TOKEN,
 
-  // ─── File matching for non-conventional values filenames ────────────────────
-  // Overrides the default "/(^|/)values\.ya?ml$/" to match our pattern:
+  // ─── File matching for non-conventional values filenames ─────────────────
+  // Replaces the default "/(^|/)values\.ya?ml$/" to match:
   // applications/<app>/<env>/<env>-values.yaml
-  helmValues: {
-    commitMessageTopic: "helm values {{depName}}",
+  "helm-values": {
     managerFilePatterns: ["/applications/[^/]+/[^/]+/[^/]+-values\\.ya?ml$/"],
-    pinDigests: false,
   },
 
   packageRules: [
     {
-      // ─── Apply to all helm-values managed docker image updates ─────────────
-      matchManagers: ["helmv3", "helm-values"],
+      matchManagers: ["helm-values"],
       matchDatasources: ["docker"],
 
-      // ─── Monorepo team split: prefix branch with <app>/<env> ──────────────
-      // parentDir resolves to e.g. "applications/app1/int"
-      // so the branch becomes: renovate/app1-int-<depName>-<newVersion>
-      additionalBranchPrefix: "{{parentDir}}-",
+      // ─── Monorepo branch split per app+env ───────────────────────────────
+      additionalBranchPrefix: "{{replace 'applications/' '' parentDir}}-",
 
-      // ─── Clean, descriptive PR title ──────────────────────────────────────
-      // Example output:
-      //   [app1/int] ⬆️ Bump some-docker/dependency: v1.0.0 → v1.1.0
+      // ─── PR / commit title subcomponents (non-deprecated API) ────────────
+      // Renovate assembles: "<action> <topic> <extra>"
+      // Result: "chore(app1/int): bump some-docker/dependency to v1.1.0"
       //
-      // {{packageFileDir}} = "applications/app1/int"  (trimmed below via regex)
-      // We extract app + env from the path with a lookup table approach,
-      // but the cleanest native Renovate way is using packageFileDir directly.
-      // Renovate >= 37 — strips leading "applications/" from the bracket label
-      prTitle:
-        "[{{replace 'applications/' '' parentDir}}] ⬆️ Bump {{depName}}: {{currentVersion}} → {{newVersion}}",
-
-      commitMessage:
-        "chore({{parentDir}}): bump {{depName}} {{currentVersion}} → {{newVersion}}",
+      // prTitle mirrors commitMessage automatically — no need to set it.
+      commitMessageAction: "⬆️ [{{replace 'applications/' '' parentDir}}] bump",
       commitMessageTopic: "{{depName}}",
+      commitMessageExtra: "{{currentVersion}} → {{newVersion}}",
+
+      // pinDigests off (inherit from default, stated explicitly for clarity)
+      pinDigests: false,
     },
   ],
 };
