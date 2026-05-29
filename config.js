@@ -3,6 +3,8 @@ module.exports = {
   token: process.env.GITHUB_TOKEN,
   gitAuthor: "Renovate Bot <renovate@mail.com>",
 
+  configFileNames: ["config.js"],
+
   // ─── Explicit repo list ──────────────────────────────────────────────────
   repositories: ["cookielevanna5/cryptoapp"],
 
