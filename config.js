@@ -3,11 +3,8 @@ module.exports = {
   onboarding: false,
   token: process.env.GITHUB_TOKEN,
   gitAuthor: "Renovate Bot <renovate@mail.com>",
-
-  // ─── Explicit repo list ──────────────────────────────────────────────────
   repositories: ["cookielevanna5/cryptoapp"],
 
-  // ─── File matching for <env>-values.yaml naming convention ──────────────
   "helm-values": {
     managerFilePatterns: ["/applications/[^/]+/[^/]+/[^/]+-values\\.ya?ml$/"],
   },
@@ -16,6 +13,9 @@ module.exports = {
     {
       matchManagers: ["helm-values"],
       matchDatasources: ["docker"],
+
+      // ── handles both "1.0.0" and "v1.0.0" tag formats ──────────────────
+      versioning: "docker",
 
       additionalBranchPrefix: "{{replace 'applications/' '' parentDir}}-",
 
