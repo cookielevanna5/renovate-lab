@@ -16,17 +16,21 @@ module.exports = {
     {
       matchManagers: ["helm-values"],
       matchDatasources: ["docker"],
-
       versioning: "docker",
+      pinDigests: false,
 
-      additionalBranchPrefix: "{{replace 'applications/' '' parentDir}}-",
+      // ── Fix grouping: each file gets its own PR ──────────────────────────
+      branchName:
+        "renovate/{{replace 'applications/' '' parentDir}}-{{depName}}-{{newMajor}}.x",
+      additionalBranchPrefix: "",
 
+      // ── Fix title: use packageFileDir instead of parentDir ───────────────
+      // packageFileDir = "applications/app/beta"
+      // after replace → "app/beta" → "app - beta"
       commitMessageAction:
-        "⬆️ [{{replace '/' ' - ' (replace 'applications/' '' parentDir)}}] bump",
+        "⬆️ [{{regexReplace 'applications/([^/]+)/([^/]+)' '$1 - $2' packageFileDir}}] bump",
       commitMessageTopic: "{{depName}}",
       commitMessageExtra: "{{currentVersion}} → {{newVersion}}",
-
-      pinDigests: false,
     },
   ],
 };
