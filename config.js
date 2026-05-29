@@ -6,6 +6,8 @@ module.exports = {
   gitAuthor: "Renovate Bot <renovate@mail.com>",
   repositories: ["cookielevanna5/cryptoapp"],
 
+  prHourlyLimit: 0,
+
   "helm-values": {
     managerFilePatterns: ["/applications/[^/]+/[^/]+/[^/]+-values\\.ya?ml$/"],
   },
