@@ -1,6 +1,7 @@
 module.exports = {
-  onboarding: false,
   enabled: true,
+  onboarding: false,
+  requireConfig: "optional",
   token: process.env.GITHUB_TOKEN,
   gitAuthor: "Renovate Bot <renovate@mail.com>",
   repositories: ["cookielevanna5/cryptoapp"],
