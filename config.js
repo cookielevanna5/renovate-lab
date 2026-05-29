@@ -1,6 +1,6 @@
 module.exports = {
-  $schema: "https://docs.renovatebot.com/renovate-schema.json",
   onboarding: false,
+  enabled: true,
   token: process.env.GITHUB_TOKEN,
   gitAuthor: "Renovate Bot <renovate@mail.com>",
   repositories: ["cookielevanna5/cryptoapp"],
