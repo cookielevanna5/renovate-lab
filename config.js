@@ -21,7 +21,8 @@ module.exports = {
 
       additionalBranchPrefix: "{{replace 'applications/' '' parentDir}}-",
 
-      commitMessageAction: "⬆️ [{{replace 'applications/' '' parentDir}}] bump",
+      commitMessageAction:
+        "⬆️ [{{replace '/' ' - ' (replace 'applications/' '' parentDir)}}] bump",
       commitMessageTopic: "{{depName}}",
       commitMessageExtra: "{{currentVersion}} → {{newVersion}}",
 
