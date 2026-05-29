@@ -1,4 +1,4 @@
 image:
   repository: busybox
-  tag: "1.36.1"
+  tag: "1.38.0"
   registry: docker.io
