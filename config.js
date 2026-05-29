@@ -1,3 +1,35 @@
+const fs = require("fs");
+const path = require("path");
+
+// ── Dynamically generate one packageRule per applications/<app>/<env> ──────
+// This reads the actual directory structure at Renovate config-parse time,
+// so adding a new app/env folder automatically gets its own PR rule.
+function generateAppEnvRules() {
+  const appsRoot = path.join(__dirname, "applications");
+
+  if (!fs.existsSync(appsRoot)) return [];
+
+  const rules = [];
+
+  for (const app of fs.readdirSync(appsRoot)) {
+    const appPath = path.join(appsRoot, app);
+    if (!fs.statSync(appPath).isDirectory()) continue;
+
+    for (const env of fs.readdirSync(appPath)) {
+      const envPath = path.join(appPath, env);
+      if (!fs.statSync(envPath).isDirectory()) continue;
+
+      rules.push({
+        matchFileNames: [`applications/${app}/${env}/**`],
+        additionalBranchPrefix: `${app}-${env}-`,
+        commitMessageAction: `⬆️ [${app} - ${env}] bump`,
+      });
+    }
+  }
+
+  return rules;
+}
+
 module.exports = {
   enabled: true,
   onboarding: false,
@@ -12,29 +44,17 @@ module.exports = {
   },
 
   packageRules: [
+    // ── Base rule: versioning for all helm-values docker deps ─────────────
     {
       matchManagers: ["helm-values"],
       matchDatasources: ["docker"],
       versioning: "docker",
       pinDigests: false,
-
-      // ── Each unique app+env gets its own branch ──────────────────────────
-      // parentDir = "applications/app/beta"
-      // replace 'applications/' '' → "app/beta"
-      // then used as prefix → "renovate/app/beta-docker.io/busybox-1.x"
-      // Renovate sanitizes slashes in branch names automatically
-      additionalBranchPrefix: "{{parentDir}}-",
-
-      // ── Title uses same regex capture ────────────────────────────────────
-      // parentDir = "applications/app/beta" → "$1 - $2" = "app - beta"
-      commitMessageAction:
-        "⬆️ [{{replace '^applications/([^/]+)/([^/]+)$' '$1 - $2' parentDir}}] bump",
       commitMessageTopic: "{{depName}}",
       commitMessageExtra: "{{currentVersion}} → {{newVersion}}",
-
-      // ── This is the key fix: each packageFile gets its own PR ────────────
-      separateMultipleMajors: true,
-      separateMinorPatch: false,
     },
+
+    // ── Dynamically generated: one rule per app+env directory ─────────────
+    ...generateAppEnvRules(),
   ],
 };
