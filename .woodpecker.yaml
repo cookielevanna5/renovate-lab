@@ -9,6 +9,5 @@ steps:
       RENOVATE_PR_CONCURRENT_LIMIT: 0
       GITHUB_TOKEN:
         from_secret: cookie-github-token
-      LOG_LEVEL: debug
     commands:
       - renovate

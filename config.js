@@ -54,6 +54,7 @@ module.exports = {
       versioning: "docker",
       pinDigests: false,
       commitMessageTopic: "{{depName}}",
+      // commitMessageTopic: "{{replace '^([^/]+/){2}' '' depName}}", // Strip "registry/repository/" from the topic
       commitMessageExtra: "{{currentVersion}} → {{newVersion}}",
     },
     ...generateAppEnvRules(),
